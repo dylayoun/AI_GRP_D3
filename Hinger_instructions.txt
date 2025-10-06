@@ -1,0 +1,31 @@
+Hinger Games Overview 
+
+ 
+
+Grid made from M rows and N columns top left cell is (0,0) 
+
+Each cell can be either Empty or active where there is a pile of 1 or more counters 
+
+2 cells (a,b) and (x,y) can be described as adjacent if max{(a-x),(b-y)}=1 
+
+Binary state is a board that each cell contains exactly one or zero counters 
+
+An active region R has 3 properties: 
+
+Each cell in R is active 
+
+Any 2 cells in R are connected via a path of adjacent active cells within R 
+
+All active cells adjacent to any cell in R are also included in R  
+
+A move consists of removing one counter from an active pile. The cost of a move is one plus the number of active cells the cell is adjacent to. 
+
+A Hinger is a special active cell whereby it only has one counter and once a move is made on it, 
+the cell will become empty and the number of active regions will increase by 1.  
+
+Each player will take turns making moves and the game will end once a move on a hinger is made. If there is no such moves, the game will end in a draw.  
+
+ 
+
+A safe path between 2 states S1 and S2, is a sequence of moves which transform S1 into S2 without any intermediate states containing a hinger cell. 
+So the whole transition must avoid increasing the number of active regions on the board.  

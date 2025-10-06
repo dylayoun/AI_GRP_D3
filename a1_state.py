@@ -13,7 +13,7 @@ Includes a State class for Task 1
 class State:
     
     def __init__ (self, grid):
-        #Ensure that the parameter grid is a 2d list using isinstance
+        #check the parameter grid is a 2d list using isinstance
         if isinstance(grid, list):
             for row in grid:
                 if isinstance(row, list):
@@ -26,14 +26,14 @@ class State:
             
         
     def __str__(self):
-        #printing the grid in a understandable format
+        #printing the grid in an understandable format
         for row in self.grid:
             row_str = ' '.join(map(str,row))
             
             print(row_str)
     
     def moves():
-        pass
+        
     
     def numRegions():
         pass
