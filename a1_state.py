@@ -8,7 +8,39 @@ Includes a State class for Task 1
 @date:   29/09/2025
 
 """
+
+
 class State:
-    {
+    
+    def __init__ (self, grid):
+        #Ensure that the parameter grid is a 2d list using isinstance
+        if isinstance(grid, list):
+            for row in grid:
+                if isinstance(row, list):
+                    self.grid = grid
+                else:
+                    raise ValueError("Grid must be a 2D list")
+        else:
+            raise ValueError("Grid must be a 2D list")  
+                
+            
         
-    }
+    def __str__(self):
+        #printing the grid in a understandable format
+        for row in self.grid:
+            row_str = ' '.join(map(str,row))
+            
+            print(row_str)
+    
+    def moves():
+        pass
+    
+    def numRegions():
+        pass
+    
+    def numHingers():
+        pass
+    
+    
+
+State([[0, 1, 0], [1, 0, 1, 4], [0, 0, 0]]).__str__()
