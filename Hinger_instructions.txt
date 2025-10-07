@@ -28,4 +28,4 @@ Each player will take turns making moves and the game will end once a move on a 
  
 
 A safe path between 2 states S1 and S2, is a sequence of moves which transform S1 into S2 without any intermediate states containing a hinger cell. 
-So the whole transition must avoid increasing the number of active regions on the board.  
+So the whole transition must avoid increasing the number of active regions on the board.     
