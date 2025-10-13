@@ -48,7 +48,10 @@ class State:
                     for i in adjCells:
                         if i > 0:
                             cost = 1 + adjCells.count(i)
+                        else:
+                            cost = 1
                     moves.append((row,element,cost))
+                    cost = 0
         return moves
                 
     #function for use of numRegions
@@ -116,7 +119,7 @@ class State:
                     while stack:
                         current_r, current_c = stack.pop()
                         #call getadjacent to get all adjacent cells
-                        for nei_r, nei_c in self.getAdjacent(self.grid, current_r, current_c):
+                        for nei_r, nei_c in self.getAdjacentPos(self.grid, current_r, current_c):
                             #if cell active and not visited mark as visited and push on stack
                             if self.grid[nei_r][nei_c] > 0 and not visited[nei_r][nei_c]:
                                 visited[nei_r][nei_c] = True
@@ -142,13 +145,15 @@ class State:
                         hinCount += 1
         return hinCount
                     
+def tester():
+    sa = State([[1, 1, 0, 0, 2], [1, 1, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 0, 1, 1]])
+    
+    print(sa)
+    
+    print(sa.moves())
     
     
-
-game = State([[1, 1, 0, 0, 1], [1, 1, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 0, 1, 1]])
-
-print(game)
-
-print(game.moves())
+if __name__ == '__main__':
+    tester()
 
 
