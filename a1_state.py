@@ -38,21 +38,35 @@ class State:
         return ""
     
     def moves(self):
+        #create list to hold all valid moves
         moves = []
+        count = 0
         for row in range(self.row_len):
             for element in range(self.col_len):
+                #if element is valid to make a move on
                 if self.grid[row][element] > 0:
-                    #NEED TO DETERMINE THE COST OF EACH MOVE (one plus the number of active cells the cell is adjacent to)
-                    #Still to debug cost is not correct in all cases
+                    #get all adjacent cells
                     adjCells = self.getAdjacentVal(self.grid, row, element)
+                    #detemine the cost of move = all valid elements adjacent(count) + 1
                     for i in adjCells:
                         if i > 0:
-                            cost = 1 + adjCells.count(i)
-                        else:
-                            cost = 1
+                            count = count + 1
+                    #add to list and reset cost and count
+                    cost = 1 + count
                     moves.append((row,element,cost))
                     cost = 0
+                    count = 0
         return moves
+    
+    #Func to make a move at a specific coord point
+    #Need to debug ln61 to only remove 1 value not turn into -1
+    def makeMove(self, posx, posy):
+        #Interate through all elements
+        if self.grid[posx][posy] > 0:
+            self.grid[posx][posy] -= 1
+            print(f"move made @ ({posx,posy}) and new value is {self.grid[posx][posy]}")
+        else:
+            print("the position you specified is invalid")
                 
     #function for use of numRegions
     def getAdjacentPos(self, grid, posa, posb):
@@ -69,6 +83,7 @@ class State:
             #assigning the row and col value of the neighbour
             r = posa + nx
             c = posb + ny
+            #detects that the neighbour is in the grid and not outside of the border
             if 0 <= r < x and 0 <= c < y:
                 adjPos.append((r,c))
         
@@ -77,7 +92,7 @@ class State:
     
     def getAdjacentVal(self, grid, posa, posb):
     #defining the return list and the x and y length of the grid
-        adjPos = []
+        adjVal = []
         x = len(grid)
         y = len(grid[0])
         
@@ -89,11 +104,12 @@ class State:
             #assigning the row and col value of the neighbour
             r = posa + nx
             c = posb + ny
+            #detects that the neighbour is in the grid and not outside of the border
             if 0 <= r < x and 0 <= c < y:
-                adjPos.append(grid[r][c])
+                adjVal.append(grid[r][c])
         
         #returns the position of all the adjacent cells
-        return adjPos
+        return adjVal
             
     
     def numRegions(self):
@@ -129,28 +145,95 @@ class State:
 
     
     def numHingers(self):
+        #initalises the amount of hingers and the current number of regions
         hinCount = 0
         currRegion = self.numRegions()
         
         for r in range(self.row_len):
             for c in range(self.col_len):
+                #hinger can only be on a element of value 1
                 if self.grid[r][c] != 1:
                     continue
                 else:
+                    #creates a copy of the grid
                     newGrid = [self.grid[i][:] for i in range(self.row_len)]
+                    #changes the specific element to 0
                     newGrid[r][c] = 0
                     newState = State(newGrid)
                     newRegion = newState.numRegions()
+                    #if the region count increases then hinger has been found 
                     if newRegion > currRegion:
                         hinCount += 1
         return hinCount
                     
+
 def tester():
     sa = State([[1, 1, 0, 0, 2], [1, 1, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 0, 1, 1]])
     
     print(sa)
     
-    print(sa.moves())
+    #Test 1 print out all possible moves and compare 
+    
+    poss_moves = [(0,0,4),(0,1,4),(0,4,1),(1,0,4),(1,1,5), (2,2,4), (2,3,5),(2,4,4),(3,3,5),(3,4,4)]
+    detected_moves = sa.moves()
+    
+    for i, move in enumerate(detected_moves):
+        if move != poss_moves[i]:
+            print(f"Move {move}is not correct")
+        else:
+            print(f"Move {move} is correct")
+
+    
+    #Test 2: print the number of hingers in the example board and compare
+    
+    detected_hin = sa.numHingers() 
+    
+    if detected_hin == 2:
+        print("Test 2 Completed Perfectly")
+    else:
+        print("Test 2 not completed")
+        
+    #Test 3: Number of regions on example board and compare
+    
+    detected_reg = sa.numRegions()
+    
+    if detected_reg == 2:
+        print("Test 3 Completed Perfectly")
+    else:
+        print("Test 3 not completed")
+        
+    #Test 4: Check that the adjacent position functions are working with example board
+    
+    example_posx = 2
+    example_posy = 3
+    
+    adj_pos = sa.getAdjacentPos(sa.grid, example_posx, example_posy)
+    adj_val = sa.getAdjacentVal(sa.grid, example_posx, example_posy)
+    
+    adj_pos_true = [(1,2),(1,3),(1,4),(2,2),(2,4),(3,2),(3,3),(3,4)]
+    adj_val_true = [0,0,0,1,1,0,1,1]
+    
+    for i , adj in enumerate(adj_pos):
+        if adj != adj_pos_true[i]:
+            print(f"the position of neighbour {adj} is incorrect")
+        else:
+            print(f"the position of neighbour {adj} is correct")
+            
+    for i , adj in enumerate(adj_val):
+        if adj != adj_val_true[i]:
+            print(f"the position of neighbour {adj} is incorrect")
+        else:
+            print(f"the position of neighbour {adj} is correct")
+            
+            
+    #Test 5: makeMove function testing with example element (0,4)
+    # move should reduce the value 2 into 1 and then the new grid is printed using __str__ method
+    
+    move = sa.makeMove(0,4)
+    
+    print(sa)
+    
+    
     
     
 if __name__ == '__main__':

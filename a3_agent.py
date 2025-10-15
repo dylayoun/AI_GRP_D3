@@ -30,4 +30,4 @@ class Agent:
         return f"Agent Name: {self.name}\n The grid has {self.size[0]} rows and {self.size[1]} columns" 
     
     def move(state, mode):
-    
+        pass
