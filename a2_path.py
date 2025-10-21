@@ -449,7 +449,7 @@ def compare(
     cases: Optional[List[Tuple[State, State, Optional[Set[State]]]]] = None,
     forbidden_density: float = 0.0,
     weights: Optional[Dict[int, float]] = None,
-    n_repeats: int = 1,
+    nRepeats: int = 1,
 ) -> List[Dict[str, object]]:
     """
     Evaluate and compare BFS, DFS, IDDFS, and A* on multiple test cases.
@@ -464,7 +464,7 @@ def compare(
         cases: List of (start, end, forbidden) tuples. If None, generates random cases
         forbidden_density: Density of forbidden states (0.0 to 1.0) for random cases
         weights: Per-bit costs for A* (used only for A* algorithm)
-        n_repeats: Number of random cases to generate per bit length
+        nRepeats: Number of random cases to generate per bit length
     
     Returns:
         List of result dictionaries containing performance metrics:
@@ -489,7 +489,7 @@ def compare(
         # Generate random test cases
         cases = []
         for n_bits in (8, 10, 12):
-            for _ in range(n_repeats):
+            for _ in range(nRepeats):
                 s = "".join(rng.choice("01") for _ in range(n_bits))
                 e = "".join(rng.choice("01") for _ in range(n_bits))
                 # Generate forbidden states
@@ -532,7 +532,7 @@ def min_safe(start: State, end: State, forbidden: Optional[Set[State]] = None,
     
     1. OPTIMALITY GUARANTEE: A* with an admissible heuristic guarantees finding
        the minimum-cost path. The weighted Hamming distance heuristic is admissible
-       (never overestimates the true cost), ensuring optimality.
+       (never overestimates the true cost).
     
     2. EFFICIENCY: A* is more efficient than uninformed searches (BFS, DFS, IDDFS)
        when costs vary between moves. The heuristic guides exploration toward the
@@ -575,7 +575,7 @@ if __name__ == "__main__":
     
     # Optional: Run a quick comparison
     print("Running performance comparison on random cases...")
-    results = compare(n_repeats=3)
+    results = compare(nRepeats=3)
     
     # Print summary
     for algo in ["BFS", "DFS", "IDDFS", "A*"]:
