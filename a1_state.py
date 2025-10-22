@@ -4,7 +4,10 @@ Coursework 001 for: CMP-6058A Artificial Intelligence
 
 Includes a State class for Task 1
 
-@author: Dylan Young (100889423)
+Group Number:
+Student ID: 100889423 (Dylan Young)
+Partner ID: 100430249 (Robert Soanes)
+
 @date:   29/09/2025
 
 """
@@ -164,6 +167,28 @@ class State:
                     #if the region count increases then hinger has been found 
                     if newRegion > currRegion:
                         hinCount += 1
+        return hinCount
+    
+    def hingerLoc(self):
+        #initalises the amount of hingers and the current number of regions
+        hinCount = []
+        currRegion = self.numRegions()
+        
+        for r in range(self.row_len):
+            for c in range(self.col_len):
+                #hinger can only be on a element of value 1
+                if self.grid[r][c] != 1:
+                    continue
+                else:
+                    #creates a copy of the grid
+                    newGrid = [self.grid[i][:] for i in range(self.row_len)]
+                    #changes the specific element to 0
+                    newGrid[r][c] = 0
+                    newState = State(newGrid)
+                    newRegion = newState.numRegions()
+                    #if the region count increases then hinger has been found 
+                    if newRegion > currRegion:
+                        hinCount.append(newGrid[r][c])
         return hinCount
                     
 
