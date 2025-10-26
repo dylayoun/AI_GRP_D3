@@ -1,4 +1,3 @@
-
 """
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
@@ -15,6 +14,7 @@ Partner ID: 100430249 (Robert Soanes)
 import a1_state
 import math
 import copy
+import time
 
 class Agent:
     
@@ -32,13 +32,16 @@ class Agent:
         return f"Agent Name: {self.name}\n The grid has {self.size[0]} rows and {self.size[1]} columns" 
     
     def move(self, state, mode):
+        
         if mode == "minimax":
             best_score = -math.inf
             best_move = None
         
-            for move in a1_state.moves(state):
+            for move in state.moves():
                 r, c = move[0], move[1]
-                new_state = a1_state.make_move(state, r, c)
+                new_state = copy.deepcopy(state) 
+                new_state.makeMove(r, c)          
+                
                 
                 score = self.minimax(new_state, 0, False)
                 
@@ -54,9 +57,10 @@ class Agent:
             alpha = -math.inf
             beta = math.inf
             
-            for move in a1_state.moves(state):
+            for move in state.moves():
                 r, c = move[0], move[1]
-                new_state = a1_state.make_move(state, r, c)
+                new_state = copy.deepcopy(state) 
+                new_state.makeMove(r, c)
                 
                 score = self.alphabeta(new_state, 0, False, alpha, beta)
                 
@@ -74,7 +78,7 @@ class Agent:
     
     def winCheck(self, state):
         winning_state = False
-        numHingers = a1_state.numHingers(state)
+        numHingers = state.numHingers()
         if numHingers != 0:
             winning_state = True
         
@@ -91,15 +95,16 @@ class Agent:
                 return 1
             else:
                 return 0
-        elif move_ahead > 10:
+        elif move_ahead > 5:
             return 0 
         else:
             if is_max:
                 best_score = -math.inf
                 
-                for move in a1_state.moves(state):
+                for move in state.moves():
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(state, r, c)
+                    new_state = copy.deepcopy(state) 
+                    new_state.makeMove(r, c)
                     
                     score = self.minimax(new_state, move_ahead + 1, False)
                     
@@ -109,9 +114,10 @@ class Agent:
             else:
                 best_score = math.inf
                 
-                for move in a1_state.moves(state):
+                for move in state.moves():
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(state, r, c)
+                    new_state = copy.deepcopy(state) 
+                    new_state.makeMove(r, c)
                     
                     score = self.minimax(new_state, move_ahead + 1, True)
                     
@@ -131,15 +137,16 @@ class Agent:
                 return 1
             else:
                 return 0
-        elif move_ahead > 10:
+        elif move_ahead > 5:
             return 0 
         else:
             if is_max:
                 best_score = -math.inf
                 
-                for move in a1_state.moves(state):
+                for move in state.moves():
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(state, r, c)
+                    new_state = copy.deepcopy(state) 
+                    new_state.makeMove(r, c)
                     
                     score = self.alphabeta(new_state, move_ahead + 1, False, alpha, beta)
                     
@@ -153,9 +160,10 @@ class Agent:
             else:
                 best_score = math.inf
                 
-                for move in a1_state.moves(state):
+                for move in state.moves():
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(state, r, c)
+                    new_state = copy.deepcopy(state) 
+                    new_state.makeMove(r, c)
                     
                     score = self.alphabeta(new_state, move_ahead + 1, True, alpha, beta)
                     
@@ -191,23 +199,38 @@ def tester():
             [0, 0, 0, 1, 1]]
     state = a1_state.State(copy.deepcopy(grid))
 
+    start_time = time.time()
     move = agent.move(state, "minimax")
+    end_time = time.time()
+    
+    time_taken = end_time - start_time
+    
     if move is not None:
         print(f"Move chosen by minimax: {move}")
+        print(f"Time taken for minimax: {time_taken:.4f} seconds")
         print("Test 2 Completed")
     else:
         print("Test 2 Failed")
+    #prints out all the moves that are made but average time is about 9.4 seconds
 
     # Test 3: move using alphabeta
     print("Test 3: Move selection using Alpha-Beta pruning")
     state = a1_state.State(copy.deepcopy(grid))
 
+    start_time = time.time()
     move = agent.move(state, "alphabeta")
+    end_time = time.time()
+    
+    time_taken = end_time - start_time 
+    
     if move is not None:
         print(f"Move chosen by alpha-beta: {move}")
+        print(f"Time taken for alpha-beta: {time_taken:.4f} seconds")
         print("Test 3 Completed")
     else:
         print("Test 3 Failed")
+    
+    #prints out all the moves that are made but average time is about half a second
 
     # Test 4: detecting hingers for a winning state
     print("Test 4: Detect Winning State (Hingers present)")
