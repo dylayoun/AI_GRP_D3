@@ -14,6 +14,7 @@ Partner ID: 100430249 (Robert Soanes)
 """
 import a1_state
 import math
+import copy
 
 class Agent:
     
@@ -31,11 +32,46 @@ class Agent:
         return f"Agent Name: {self.name}\n The grid has {self.size[0]} rows and {self.size[1]} columns" 
     
     def move(self, state, mode):
-        pass
+        if mode == "minimax":
+            best_score = -math.inf
+            best_move = None
+        
+            for move in a1_state.moves(state):
+                r, c = move[0], move[1]
+                new_state = a1_state.make_move(state, r, c)
+                
+                score = self.minimax(new_state, 0, False)
+                
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+            return best_move
+        
+        elif mode == "alphabeta":
+            best_score = -math.inf
+            best_move = None
+            
+            alpha = -math.inf
+            beta = math.inf
+            
+            for move in a1_state.moves(state):
+                r, c = move[0], move[1]
+                new_state = a1_state.make_move(state, r, c)
+                
+                score = self.alphabeta(new_state, 0, False, alpha, beta)
+                
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+                alpha = max(alpha, best_score)
+            return best_move
+        else:
+            raise ValueError("Invalid mode selected. Please choose either minimax or alphabeta.")
     
     #Checks if the state of the board is in a position to win in the next move.
     #Game is won if a move on a hinger cell is made, detect the number of hingers
     #and if it is >0 then state is possible for a winning move
+    
     def winCheck(self, state):
         winning_state = False
         numHingers = a1_state.numHingers(state)
@@ -46,22 +82,24 @@ class Agent:
     
     #create minimax playing strategy
     def minimax(self, state, move_ahead, is_max):
-        #Checking if there is a winning state for the current player
-        win = state.winCheck(state)
+        #Checking if there is a winning state for the current player or if the depth limit is reached (10)
+        win = self.winCheck(state)
         if win == True:
             if is_max:
-                return 1
-            elif not is_max:
                 return -1
+            elif not is_max:
+                return 1
             else:
                 return 0
+        elif move_ahead > 10:
+            return 0 
         else:
             if is_max:
                 best_score = -math.inf
                 
-                for move in a1_state.moves():
+                for move in a1_state.moves(state):
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(r, c)
+                    new_state = a1_state.make_move(state, r, c)
                     
                     score = self.minimax(new_state, move_ahead + 1, False)
                     
@@ -71,9 +109,9 @@ class Agent:
             else:
                 best_score = math.inf
                 
-                for move in a1_state.moves():
+                for move in a1_state.moves(state):
                     r, c = move[0], move[1]
-                    new_state = a1_state.make_move(r, c)
+                    new_state = a1_state.make_move(state, r, c)
                     
                     score = self.minimax(new_state, move_ahead + 1, True)
                     
@@ -81,30 +119,141 @@ class Agent:
                         best_score = score
                 return best_score
             
-    def get_best_move(self):
-        best_score = -math.inf
-        best_move = None
         
-        for move in a1_state.moves():
-            r, c = move[0], move[1]
-            new_state = a1_state.make_move(r, c)
-            
-            score = self.minimax(new_state, 0, False)
-            
-            if score > best_score:
-                best_score = score
-                best_move = move
-        return best_move
-                    
-                    
+    #Copy of minimax with AB pruning 
+    def alphabeta(self, state, move_ahead, is_max, alpha, beta):
+        #Checking if there is a winning state for the current player or if the depth limit is reached (10)
+        win = self.winCheck(state)
+        if win == True:
+            if is_max:
+                return -1
+            elif not is_max:
+                return 1
+            else:
+                return 0
+        elif move_ahead > 10:
+            return 0 
+        else:
+            if is_max:
+                best_score = -math.inf
                 
+                for move in a1_state.moves(state):
+                    r, c = move[0], move[1]
+                    new_state = a1_state.make_move(state, r, c)
+                    
+                    score = self.alphabeta(new_state, move_ahead + 1, False, alpha, beta)
+                    
+                    if score > best_score:
+                        best_score = score
+                    
+                    if best_score >= beta:
+                        break
+                    alpha = max(alpha, best_score)
+                
+            else:
+                best_score = math.inf
+                
+                for move in a1_state.moves(state):
+                    r, c = move[0], move[1]
+                    new_state = a1_state.make_move(state, r, c)
+                    
+                    score = self.alphabeta(new_state, move_ahead + 1, True, alpha, beta)
+                    
+                    if score < best_score:
+                        best_score = score
+                        
+                    if best_score <= alpha:
+                        break
+                    beta = min(beta, best_score)
+            
+            return best_score
     
-    def alphabeta():
-        pass
     
-    #Checks if the state of the board is in a position to win in the next move.
-    #Game is won if a move on a hinger cell is made, detect the number of hingers
-    #and if it is >0 then state is possible for a winning move
+            
+    #Testing function
+def tester():
+
+    # --- Setup ---
+    size = (4, 5)
+    agent = Agent(size)
+    print(f"Created Agent: {agent.name}")
+
+    # Test 1: agent str representation
+    print("Test 1: String Representation of Agent")
+    print(agent)
+    print("Test 1 Completed")
+
+    # Test 2: move using minimax
+    print("Test 2: Move selection using Minimax")
+    grid = [[1, 1, 0, 0, 2],
+            [1, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1],
+            [0, 0, 0, 1, 1]]
+    state = a1_state.State(copy.deepcopy(grid))
+
+    move = agent.move(state, "minimax")
+    if move is not None:
+        print(f"Move chosen by minimax: {move}")
+        print("Test 2 Completed")
+    else:
+        print("Test 2 Failed")
+
+    # Test 3: move using alphabeta
+    print("Test 3: Move selection using Alpha-Beta pruning")
+    state = a1_state.State(copy.deepcopy(grid))
+
+    move = agent.move(state, "alphabeta")
+    if move is not None:
+        print(f"Move chosen by alpha-beta: {move}")
+        print("Test 3 Completed")
+    else:
+        print("Test 3 Failed")
+
+    # Test 4: detecting hingers for a winning state
+    print("Test 4: Detect Winning State (Hingers present)")
+    win_grid = [[1, 1, 0, 0, 2],
+                [1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 1, 1]]
+    state = a1_state.State(copy.deepcopy(win_grid))
+
+    win_detected = agent.winCheck(state)
+    if win_detected:
+        print(f"Winning state detected? {win_detected}")
+        print("Test 4 Completed")
+    else:
+        print(f"Winning state detected? {win_detected}")
+        print("Test 4 Failed")
+
+    # Test 5: invalid mode handling
+    print("Test 5: Invalid Mode Handling")
+    state = a1_state.State(copy.deepcopy(grid))
+    if "random" not in agent.modes:
+        print("Invalid mode selected correctly rejected.")
+        print("Test 5 Completed")
+    else:
+        print("Test 5 Failed")
+
+    # Test 6: empty board with no available moves
+    print("Test 6: Empty Board")
+    full_grid = [[0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]]
+    state = a1_state.State(copy.deepcopy(full_grid))
+
+    move = agent.move(state, "minimax")
+    if move is None:
+        print(f"Returned move: {move}")
+        print("Test 6 Completed")
+    else:
+        print(f"Returned move: {move}")
+        print("Test 6 Failed")
+
+    print("All Tests Completed.")
+if __name__ == "__main__":
+    tester()
+
        
     
     

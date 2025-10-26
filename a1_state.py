@@ -198,7 +198,7 @@ def tester():
     print(sa)
     
     #Test 1 print out all possible moves and compare 
-    
+    print("Test 1: Possible Moves Function")
     poss_moves = [(0,0,4),(0,1,4),(0,4,1),(1,0,4),(1,1,5), (2,2,4), (2,3,5),(2,4,4),(3,3,5),(3,4,4)]
     detected_moves = sa.moves()
     
@@ -210,7 +210,7 @@ def tester():
 
     
     #Test 2: print the number of hingers in the example board and compare
-    
+    print("Test 2: Number of Hingers Function")
     detected_hin = sa.numHingers() 
     
     if detected_hin == 2:
@@ -219,7 +219,7 @@ def tester():
         print("Test 2 not completed")
         
     #Test 3: Number of regions on example board and compare
-    
+    print("Test 3: Number of Regions Function")
     detected_reg = sa.numRegions()
     
     if detected_reg == 2:
@@ -228,7 +228,7 @@ def tester():
         print("Test 3 not completed")
         
     #Test 4: Check that the adjacent position functions are working with example board
-    
+    print("Test 4: Adj Position and Value Function")
     example_posx = 2
     example_posy = 3
     
@@ -253,10 +253,13 @@ def tester():
             
     #Test 5: makeMove function testing with example element (0,4)
     # move should reduce the value 2 into 1 and then the new grid is printed using __str__ method
+    print("Test 5: makeMove Function")
     
     move = sa.makeMove(0,4)
     
     print(sa)
+    
+    print("All Tests Completed.")
     
     
     
