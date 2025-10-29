@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "game": "Hinger",
+    "players": [
+      "player1",
+      "player2"
+    ],
+    "time_limit_sec": 60,
+    "start_utc": "2025-10-29T01:06:40Z",
+    "rows": 4,
+    "cols": 5,
+    "totalTurns": 6
+  },
+  "moves": [
+    {
+      "turn": 1,
+      "player": "player1",
+      "move": [
+        0,
+        0,
+        1
+      ],
+      "coord": [
+        0,
+        0
+      ],
+      "start_ts": 1761700000.7605581,
+      "end_ts": 1761700000.7797809,
+      "elapsed_sec": 0.019222736358642578,
+      "flags": []
+    },
+    {
+      "turn": 2,
+      "player": "player2",
+      "move": [
+        0,
+        1,
+        1
+      ],
+      "coord": [
+        0,
+        1
+      ],
+      "start_ts": 1761700000.7801561,
+      "end_ts": 1761700000.7897651,
+      "elapsed_sec": 0.009608983993530273,
+      "flags": []
+    },
+    {
+      "turn": 3,
+      "player": "player1",
+      "move": [
+        0,
+        4,
+        2
+      ],
+      "coord": [
+        0,
+        4
+      ],
+      "start_ts": 1761700000.7902136,
+      "end_ts": 1761700000.7949493,
+      "elapsed_sec": 0.004735708236694336,
+      "flags": []
+    },
+    {
+      "turn": 4,
+      "player": "player2",
+      "move": [
+        1,
+        0,
+        1
+      ],
+      "coord": [
+        1,
+        0
+      ],
+      "start_ts": 1761700000.795295,
+      "end_ts": 1761700000.7976573,
+      "elapsed_sec": 0.0023622512817382812,
+      "flags": []
+    },
+    {
+      "turn": 5,
+      "player": "player1",
+      "move": [
+        2,
+        3,
+        1
+      ],
+      "coord": [
+        2,
+        3
+      ],
+      "start_ts": 1761700000.798054,
+      "end_ts": 1761700000.799275,
+      "elapsed_sec": 0.0012209415435791016,
+      "flags": []
+    },
+    {
+      "turn": 6,
+      "player": "player2",
+      "move": [
+        2,
+        2,
+        1
+      ],
+      "coord": [
+        2,
+        2
+      ],
+      "start_ts": 1761700000.799594,
+      "end_ts": 1761700000.8003037,
+      "elapsed_sec": 0.0007097721099853516,
+      "flags": [
+        "hinger"
+      ]
+    }
+  ],
+  "result": {
+    "winner": "player2",
+    "reason": "hinger",
+    "durationSec": 0.04
+  }
+}

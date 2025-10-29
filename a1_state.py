@@ -43,34 +43,51 @@ class State:
     def moves(self):
         #create list to hold all valid moves
         moves = []
-        count = 0
-        for row in range(self.row_len):
-            for element in range(self.col_len):
-                #if element is valid to make a move on
-                if self.grid[row][element] > 0:
-                    #get all adjacent cells
-                    adjCells = self.getAdjacentVal(self.grid, row, element)
+        #count = 0
+        #for row in range(self.row_len):
+         #   for element in range(self.col_len):
+          #      #if element is valid to make a move on
+           #     if self.grid[row][element] > 0:
+            #        #get all adjacent cells
+             #       adjCells = self.getAdjacentVal(self.grid, row, element)
                     #detemine the cost of move = all valid elements adjacent(count) + 1
-                    for i in adjCells:
-                        if i > 0:
-                            count = count + 1
+              #      for i in adjCells:
+               #         if i > 0:
+                #            count = count + 1
                     #add to list and reset cost and count
-                    cost = 1 + count
-                    moves.append((row,element,cost))
-                    cost = 0
-                    count = 0
+                 #   cost = 1 + count
+                  #  moves.append((row,element,cost))
+                   # cost = 0
+                    #count = 0
+        for r in range(self.row_len):
+            for c in range(self.col_len):
+                if self.grid[r][c] > 0:                   # only non-empty cells
+                    moves.append((r, c, self.grid[r][c])) 
         return moves
     
     #Func to make a move at a specific coord point
     #Need to debug ln61 to only remove 1 value not turn into -1
-    def makeMove(self, posx, posy):
+    #def makeMove(self, posx, posy):
         #Interate through all elements
-        if self.grid[posx][posy] > 0:
-            self.grid[posx][posy] -= 1
-            print(f"move made @ ({posx,posy}) and new value is {self.grid[posx][posy]}")
-        else:
-            print("the position you specified is invalid")
+        #if self.grid[posx][posy] > 0:
+        #    self.grid[posx][posy] -= 1
+       #     print(f"move made @ ({posx,posy}) and new value is {self.grid[posx][posy]}")
+      #  else:
+     #       print("the position you specified is invalid")
                 
+    def makeMove(self, posx, posy):
+    # bounds guard (optional but recommended)
+        if not (0 <= posx < self.row_len and 0 <= posy < self.col_len):
+            raise ValueError(f"Out of bounds: {(posx, posy)}")
+
+        # cannot play an empty cell
+        if self.grid[posx][posy] <= 0:
+            # either raise (strict) or just return False
+            raise ValueError(f"Illegal move: cell {(posx, posy)} already empty")
+
+        # one move removes the counter entirely
+        self.grid[posx][posy] = 0
+
     #function for use of numRegions
     def getAdjacentPos(self, grid, posa, posb):
         #defining the return list and the x and y length of the grid
