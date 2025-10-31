@@ -1,6 +1,6 @@
 # a4_game.py
 """
-Hinger – Task 4: Main game loop that uses Task 1 (State) and Task 3 (Agent).
+Hinger – Task 4: Main game loop.
 
 - Uses a1_state.State for the board & rules
 - Uses a3_agent.Agent for AI move selection (minimax/alphabeta)
@@ -19,7 +19,7 @@ import a1_state   # State(grid)
 import a3_agent   # Agent(sizeTuple).move(state, mode)
 
 
-# ========= Helpers (camelCase) =========
+# Helpers
 
 def agentName(agent: Any, default: str) -> str:
     if agent is None:
@@ -28,7 +28,7 @@ def agentName(agent: Any, default: str) -> str:
 
 
 def extractBoardSize(state: a1_state.State) -> Tuple[int, int]:
-    """Map your State attributes to (rows, cols)."""
+    """Map State attributes to (rows, cols)."""
     rows = getattr(state, "row_len", None)
     cols = getattr(state, "col_len", None)
     if rows is None or cols is None:
@@ -50,7 +50,7 @@ def legalMovesRC(state: a1_state.State) -> List[Tuple[int, int]]:
 
 
 def toCoord(move: Any) -> Tuple[Optional[int], Optional[int]]:
-    """Parse move to (r, c). Supports (r,c), (r,c,cost), dicts, and 'r,c' strings."""
+    """Parse move to (r, c). Supports (r,c), (r,c,cost), dicts, and 'r,c'."""
     if isinstance(move, (tuple, list)) and len(move) >= 2:
         try:
             return int(move[0]), int(move[1])
@@ -90,10 +90,7 @@ def applyMove(state: a1_state.State, move: Any) -> None:
 
 
 def hingerTriggered(stateBefore: a1_state.State, move: Any) -> bool:
-    """
-    A 'hinger' is a cell with value 1 whose removal increases the number of regions.
-    Simulate the removal on a copy and compare numRegions() before vs after.
-    """
+
     r, c = toCoord(move)
     if r is None:
         return False
@@ -131,7 +128,7 @@ def maybeSaveHistory(path: Optional[str], payload: Dict[str, Any]) -> None:
         print(f"[warn] Failed to save history to {path}: {e}")
 
 
-# ========= Core gameplay =========
+# Gameplay 
 
 def play(
     state: a1_state.State,
@@ -146,7 +143,7 @@ def play(
 ) -> Optional[str]:
     """
     Run a complete Hinger game using your State and Agent implementations.
-    Returns winner name (str) or None for draw.
+    Returns winner name or None for draw.
     """
     name1 = agentName(player1, "Player1")
     name2 = agentName(player2, "Player2")
@@ -197,7 +194,7 @@ def play(
 
         # choose move
         startTs = time.time()
-        if playerAgent is None:
+        if playerAgent is None: # this hasnt been tested properly yet, I hope it works
             raw = input("Enter your move (e.g., '2,3'): ").strip()
             move = raw
         else:
@@ -205,7 +202,7 @@ def play(
         endTs = time.time()
         elapsed = endTs - startTs
 
-        # time limit (soft)
+        # time limit 
         if timeLimit is not None and elapsed > timeLimit:
             if not quiet:
                 print(f"{playerName} exceeded {timeLimit:.0f}s ({elapsed:.2f}s). {oppName} wins.")
@@ -216,7 +213,7 @@ def play(
             })
             return endGame(oppName, "timeout")
 
-        # legality (from State.moves())
+        # legality
         if not isValidMove(state, move):
             if not quiet:
                 print(f"Illegal move by {playerName}: {move!r}. {oppName} wins.")
@@ -227,7 +224,7 @@ def play(
             })
             return endGame(oppName, "illegal_move")
 
-        # EXTRA SAFETY: prevent re-playing a cleared square (value==0)
+        # prevent re-playing a cleared square (value==0)
         r, c = toCoord(move)
         if getattr(state, "grid", None) is not None:
             try:
@@ -271,27 +268,27 @@ def play(
             print(f"→ {playerName} played {move!r}")
             print(state)
 
-        # if hinger: mark the just-recorded move and finish
+        # if hinger: mark the just recorded move and finish
         if triggered:
             moveEntry["flags"].append("hinger")
             if not quiet:
-                print(f"🏆 {playerName} triggered a hinger and wins!")
+                print(f"{playerName} triggered a hinger and wins")
             return endGame(playerName, "hinger")
 
         # draw
         if isDraw(state):
             if not quiet:
-                print("🤝 Draw — all counters removed.")
+                print(" Draw — all counters removed.")
             return endGame(None, "draw")
 
         # next
         currentIdx ^= 1
 
 
-# ========= Minimal real tester =========
+# Testing
 
 def tester():
-    """Runs a short game using your real modules (a1_state + a3_agent)."""
+    """Runs a short game using a1 and a3."""
     grid = [
         [1, 1, 0, 0, 2],
         [1, 1, 0, 0, 0],
@@ -304,7 +301,7 @@ def tester():
     player1 = a3_agent.Agent((rows, cols), name="player1")
     player2 = a3_agent.Agent((rows, cols), name="player2")
 
-    print("Running Hinger (a1+a3) with alphabeta...")
+    print("Running Hinger with alphabeta...")
     winner = play(
         state,
         player1,
@@ -318,6 +315,133 @@ def tester():
     print(f"\nWinner: {winner}")
     print("History saved to gameHistory.json")
 
+def test_isDraw():
+    """Check draw detection when board is empty vs non-empty."""
+    empty_grid = [
+        [0, 0],
+        [0, 0],
+    ]
+    non_empty_grid = [
+        [0, 1],
+        [0, 0],
+    ]
+    s_empty = a1_state.State(empty_grid)
+    s_non = a1_state.State(non_empty_grid)
+
+    assert isDraw(s_empty) is True, "Empty board should be a draw"
+    assert isDraw(s_non) is False, "Non-empty board should NOT be a draw"
+    print("est_isDraw OK")
+
+
+def test_legalMoves_and_isValidMove():
+    """Check that legalMovesRC() matches isValidMove() behaviour."""
+    grid = [
+        [1, 0],
+        [1, 1],
+    ]
+    s = a1_state.State(grid)
+    legal = set(legalMovesRC(s))
+
+    # every legal move should be valid
+    for mv in legal:
+        assert isValidMove(s, mv), f"{mv} reported legal but not valid?"
+
+    # make sure obviously illegal is caught
+    bad_move = (99, 99)
+    assert bad_move not in legal, "Bad move showed up in legalMovesRC()?"
+    assert not isValidMove(s, bad_move), "Out-of-bounds move marked valid?"
+    print("test_legalMoves_and_isValidMove is OK")
+
+
+def test_hingerTriggered_flag():
+    """
+    We simulate a move that *should* create a hinger (i.e. splits the board).
+    This relies on state.numRegions() and how a1_state.State works.
+    If your board / rules differ, adjust grid + mv below.
+    """
+    # This grid is just a guessy example: tweak if your Hinger definition differs.
+    grid = [
+        [1, 1, 0],
+        [0, 1, 0],
+        [2, 0, 0],
+    ]
+    s = a1_state.State(grid)
+
+    # choose a move that removes a '1' that was connecting regions
+    candidateMove = (0, 1)
+
+    trig = hingerTriggered(s, candidateMove)
+    # We can't assert True or False universally without knowing the exact numRegions()
+    # behaviour, but at least we exercise the code path so it doesn't crash.
+    print(f"test_hingerTriggered_flag -> {candidateMove} triggered={trig} (no assert)")
+
+
+def test_timeout_logic():
+    """
+    Runs a game with a *very* low timeLimit and an Agent that deliberately 'thinks'
+    too long, to confirm timeout is handled and opp is declared winner.
+    We'll create a dummy SlowAgent locally that just sleeps.
+    """
+    class SlowAgent:
+        def __init__(self, delay=0.05):
+            self.delay = delay
+            self.name = "SlowAgent"
+        def move(self, state, mode):
+            time.sleep(self.delay)
+            # try to return some legal move so it's not illegal, just slow
+            moves = legalMovesRC(state)
+            return moves[0] if moves else (0, 0)
+
+    class FastAgent:
+        def __init__(self):
+            self.name = "FastAgent"
+        def move(self, state, _mode):
+            moves = legalMovesRC(state)
+            return moves[0] if moves else (0, 0)
+
+    grid = [
+        [1, 1],
+        [2, 1],
+    ]
+    s = a1_state.State(grid)
+    rows, cols = extractBoardSize(s)
+    print(f"Board size detected: {rows}x{cols}")
+    
+
+    slow = SlowAgent(delay=0.05)
+    fast = FastAgent()
+
+    # super tiny timeLimit so SlowAgent should "lose on time"
+    winner = play(
+        s,
+        slow,
+        fast,
+        player1Mode="alphabeta",
+        player2Mode="alphabeta",
+        timeLimit=0.01,  # intentionally tiny
+        saveHistoryPath=None,
+        quiet=True,
+    )
+
+    assert winner == "FastAgent", f"Expected FastAgent to win on timeout, got {winner}"
+    print("[OK] test_timeout_logic")
+
+
+def run_all_tests():
+    """
+    Run all small tests plus a demo game.
+    If any assert fails, Python will raise AssertionError.
+    """
+    print("Running self-checks")
+    test_isDraw()
+    test_legalMoves_and_isValidMove()
+    test_hingerTriggered_flag()
+    test_timeout_logic()
+    print("Running demo game")
+    tester()
+    print("All tests complete ")
+
 
 if __name__ == "__main__":
-    tester()
+    run_all_tests()
+

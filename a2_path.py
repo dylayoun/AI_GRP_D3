@@ -144,7 +144,7 @@ def path_BFS(start: State, end: State, forbidden: Optional[Set[State]] = None) -
     return None
 
 
-def path_DFS(start: State, end: State, forbidden: Optional[Set[State]] = None, depth_limit: Optional[int] = None) -> Optional[List[Move]]:
+def path_DFS(start: State, end: State, forbidden: Optional[Set[State]] = None, depthLimit: Optional[int] = None) -> Optional[List[Move]]:
     """
     Depth-First Search: returns a safe path if one exists (not guaranteed minimal).
     
@@ -162,7 +162,7 @@ def path_DFS(start: State, end: State, forbidden: Optional[Set[State]] = None, d
         start: Initial binary state
         end: Goal binary state
         forbidden: Set of states to avoid (hinger states)
-        depth_limit: Optional maximum depth to explore
+        depthLimit: Optional maximum depth to explore
     
     Returns:
         List of moves forming a safe path, or None if no path exists
@@ -185,7 +185,7 @@ def path_DFS(start: State, end: State, forbidden: Optional[Set[State]] = None, d
 
     while stack:
         cur, depth = stack.pop()
-        if depth_limit is not None and depth >= depth_limit:
+        if depthLimit is not None and depth >= depthLimit:
             continue
         for ns, mv in _neighbors(cur, forbidden):
             if ns in visited:
@@ -325,10 +325,10 @@ def path_astar(
     if start in forbidden:
         return None
 
-    def default_h(s: State, t: State) -> float:
+    def defaultH(s: State, t: State) -> float:
         return _weightedHamming(s, t, weights)
 
-    h = heuristic or default_h
+    h = heuristic or defaultH
 
     open_heap: List[_PQItem] = []
     g_cost: Dict[State, float] = {start: 0.0}
@@ -409,7 +409,7 @@ def tester() -> None:
     for mv in res_bfs:
         cur = _applyMove(cur, mv)
         assert cur not in forbidden, f"Path includes forbidden state: {cur}"
-    print(f"   BFS found safe path of length {len(res_bfs)}, avoiding forbidden states")
+    print(f"BFS found safe path of length {len(res_bfs)}, avoiding forbidden states")
 
     # Test 4: Weighted costs with A*
     print("\n[Test 4] Weighted A* search...")
@@ -452,10 +452,8 @@ def compare(
     nRepeats: int = 1,
 ) -> List[Dict[str, object]]:
     """
-    Evaluate and compare BFS, DFS, IDDFS, and A* on multiple test cases.
+    Evaluates and compares BFS, DFS, IDDFS, and A* on multiple test cases.
     
-    This function provides empirical performance comparison across different
-    algorithms, measuring:
     - Correctness (whether a path is found)
     - Path length
     - Execution time
