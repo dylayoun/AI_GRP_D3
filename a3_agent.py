@@ -8,7 +8,7 @@ Group Number:
 Student ID: 100889423 (Dylan Young)
 Partner ID: 100430249 (Robert Soanes)
 
-@date:   29/09/2025
+@date:   26/10/2025
 
 """
 import a1_state
@@ -21,6 +21,7 @@ class Agent:
     name = "D3"
     modes = ['minimax','alphabeta']
     
+    #initalising agent with the size and default name of D3
     def __init__(self, size, name = "D3"):
         if isinstance(size, tuple):
             self.size = size
@@ -28,17 +29,23 @@ class Agent:
         else:
             raise TypeError("Size must be a tuple")
         
+    #str rep of agent printing the name and size
     def __str__(self):
         return f"Agent Name: {self.name}\n The grid has {self.size[0]} rows and {self.size[1]} columns" 
     
+    #function to make a move based on the selected mode
     def move(self, state, mode):
         
+        #if mode is minimax then run minimax function
         if mode == "minimax":
+            #best_score as the lowest possible value to start
             best_score = -math.inf
             best_move = None
-        
+
+            #iterate through all the possible moves
             for move in state.moves():
                 r, c = move[0], move[1]
+                #create new state to sim move using deepcopy to ensure that the 2d array is copied properly
                 new_state = copy.deepcopy(state) 
                 new_state.makeMove(r, c)          
                 
@@ -98,6 +105,7 @@ class Agent:
         elif move_ahead > 5:
             return 0 
         else:
+            #if looking to maximise score
             if is_max:
                 best_score = -math.inf
                 
@@ -105,12 +113,13 @@ class Agent:
                     r, c = move[0], move[1]
                     new_state = copy.deepcopy(state) 
                     new_state.makeMove(r, c)
-                    
+                    #recursive call to minimax with increased depth and switching to minimizing player
                     score = self.minimax(new_state, move_ahead + 1, False)
                     
                     if score > best_score:
                         best_score = score
                 return best_score
+            #else looking to minimise score
             else:
                 best_score = math.inf
                 
@@ -118,7 +127,7 @@ class Agent:
                     r, c = move[0], move[1]
                     new_state = copy.deepcopy(state) 
                     new_state.makeMove(r, c)
-                    
+                    #recursive call to minimax with increased depth and switching to maximizing player
                     score = self.minimax(new_state, move_ahead + 1, True)
                     
                     if score < best_score:
@@ -152,9 +161,10 @@ class Agent:
                     
                     if score > best_score:
                         best_score = score
-                    
+                    #checks if the best score is greater than or equal to beta to prune the branch
                     if best_score >= beta:
                         break
+                    #updates alpha value
                     alpha = max(alpha, best_score)
                 
             else:

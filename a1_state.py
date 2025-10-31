@@ -86,7 +86,7 @@ class State:
             raise ValueError(f"Illegal move: cell {(posx, posy)} already empty")
 
         # one move removes the counter entirely
-        self.grid[posx][posy] = 0
+        self.grid[posx][posy] = self.grid[posx][posy] - 1
 
     #function for use of numRegions
     def getAdjacentPos(self, grid, posa, posb):
