@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "game": "Hinger",
+    "players": [
+      "BadAgent",
+      "GoodAgent"
+    ],
+    "time_limit_sec": 60.0,
+    "start_utc": "2025-11-03T17:36:34Z",
+    "rows": 2,
+    "cols": 2,
+    "total_turns": 3
+  },
+  "moves": [
+    {
+      "turn": 1,
+      "player": "BadAgent",
+      "coord": [
+        0,
+        0
+      ],
+      "start_ts": 1762191394.5922751,
+      "end_ts": 1762191394.5922773,
+      "elapsed_sec": 0.0,
+      "flags": []
+    },
+    {
+      "turn": 2,
+      "player": "GoodAgent",
+      "coord": [
+        0,
+        1
+      ],
+      "start_ts": 1762191394.59268,
+      "end_ts": 1762191394.592822,
+      "elapsed_sec": 0.0,
+      "flags": []
+    },
+    {
+      "turn": 3,
+      "player": "BadAgent",
+      "coord": [
+        0,
+        0
+      ],
+      "start_ts": 1762191394.5931766,
+      "end_ts": 1762191394.5931795,
+      "elapsed_sec": 0.0,
+      "flags": [
+        "illegal",
+        "cell_already_empty"
+      ]
+    }
+  ],
+  "result": {
+    "winner": "GoodAgent",
+    "reason": "illegal_move",
+    "duration_sec": 0.002
+  }
+}

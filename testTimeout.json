@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "game": "Hinger",
+    "players": [
+      "SlowAgent",
+      "FastAgent"
+    ],
+    "time_limit_sec": 0.1,
+    "start_utc": "2025-11-03T17:36:34Z",
+    "rows": 2,
+    "cols": 2,
+    "total_turns": 1
+  },
+  "moves": [
+    {
+      "turn": 1,
+      "player": "SlowAgent",
+      "coord": [
+        0,
+        0
+      ],
+      "start_ts": 1762191394.5947921,
+      "end_ts": 1762191394.744867,
+      "elapsed_sec": 0.15,
+      "flags": [
+        "timeout"
+      ]
+    }
+  ],
+  "result": {
+    "winner": "FastAgent",
+    "reason": "timeout",
+    "duration_sec": 0.151
+  }
+}
